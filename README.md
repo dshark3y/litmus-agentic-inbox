@@ -34,6 +34,8 @@ This deployment sets `CATCH_ALL_MAILBOX` to `hello@takelitmus.com`. The active C
 
 `DOMAINS` lists the accepted recipient domains (comma-separated). A non-empty `EMAIL_ADDRESSES` list further restricts accepted envelope recipients. Remove `CATCH_ALL_MAILBOX` to deliver to each recipient's own mailbox instead.
 
+`order.takelitmus.com` is also accepted, with an explicit Cloudflare routing rule for `support@order.takelitmus.com` pointing to this Worker. These messages are stored in `hello@takelitmus.com` as well.
+
 Cloudflare Email Routing currently supports catch-all rules only for apex domains. Adding a subdomain to `DOMAINS` alone does not make arbitrary addresses on that subdomain routable; subdomains require individual routing rules or another inbound mail provider.
 
 Run the routing regression tests with Node 22.18+ or 24+: `node --test tests/inbound-routing.test.mjs`.

@@ -22,6 +22,13 @@ test("recipient allowlists still apply before catch-all delivery", () => {
 	assert.equal(resolveInboundMailbox("someone@takelitmus.com", restricted), undefined);
 });
 
+test("an explicitly enabled subdomain delivers into the same hello mailbox", () => {
+	const subdomainEnv = { ...env, DOMAINS: "takelitmus.com,order.takelitmus.com" };
+	assert.equal(resolveInboundMailbox("support@order.takelitmus.com", subdomainEnv), "hello@takelitmus.com");
+	assert.equal(resolveInboundMailbox("hello@takelitmus.com", subdomainEnv), "hello@takelitmus.com");
+	assert.equal(resolveInboundMailbox("support@other.takelitmus.com", subdomainEnv), undefined);
+});
+
 test("without a catch-all target, delivery uses the envelope's own mailbox", () => {
 	assert.equal(resolveInboundMailbox("ORDERS@takelitmus.com", { DOMAINS: "takelitmus.com" }), "orders@takelitmus.com");
 });
