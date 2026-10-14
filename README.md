@@ -28,6 +28,16 @@ https://github.com/cloudflare/agentic-inbox/issues/4#issuecomment-4269118513
 4. **Enable Email Service** -- The worker needs the `send_email` binding to send outbound emails. See [Email Service docs](https://developers.cloudflare.com/email-routing/email-workers/send-email-workers/)
 5. **Create a mailbox** -- Visit your deployed app and create a mailbox for any address on your domain (e.g. `hello@example.com`)
 
+### Catch-all mailbox
+
+This deployment sets `CATCH_ALL_MAILBOX` to `hello@takelitmus.com`. The active Cloudflare catch-all routes mail for `*@takelitmus.com` to this Worker, which stores it in that mailbox. The original To/Cc headers are retained, and delivery uses the SMTP envelope recipient so Bcc mail also works. The destination mailbox must exist before receiving mail.
+
+`DOMAINS` lists the accepted recipient domains (comma-separated). A non-empty `EMAIL_ADDRESSES` list further restricts accepted envelope recipients. Remove `CATCH_ALL_MAILBOX` to deliver to each recipient's own mailbox instead.
+
+Cloudflare Email Routing currently supports catch-all rules only for apex domains. Adding a subdomain to `DOMAINS` alone does not make arbitrary addresses on that subdomain routable; subdomains require individual routing rules or another inbound mail provider.
+
+Run the routing regression tests with Node 22.18+ or 24+: `node --test tests/inbound-routing.test.mjs`.
+
 ### Troubleshooting Access
 
 1. If you see `Invalid or expired Access token`, that usually means `POLICY_AUD` or `TEAM_DOMAIN` secrets are incorrect.
